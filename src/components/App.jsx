@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Section from './Feedback/Section';
+import Section from './Section/Section';
 import FeedbackOptions from './Feedback/FeedbackOptions';
-import Statistics from './Feedback/Statistics';
-import Notification from './Feedback/Notification';
+import Statistics from './Statistics/Statistics';
+import Notification from './Notification/Notification';
 
 export const App = () => {
-  const [good, setGood] = useState(0);
-  const [bad, setBad] = useState(0);
-  const [neutral, setNeutral] = useState(0);
+  const [good, setGood] = useState(
+    JSON.parse(localStorage.getItem('good')) || 0
+  );
+  const [bad, setBad] = useState(JSON.parse(localStorage.getItem('bad')) || 0);
+  const [neutral, setNeutral] = useState(
+    JSON.parse(localStorage.getItem('neutral')) || 0
+  );
 
   const onLeaveFeedback = option => {
     switch (option) {
@@ -31,6 +35,12 @@ export const App = () => {
     const total = countTotalFeedback();
     return total === 0 ? 0 : Math.round((good / total) * 100);
   };
+
+  useEffect(() => {
+    localStorage.setItem('good', JSON.stringify(good));
+    localStorage.setItem('bad', JSON.stringify(bad));
+    localStorage.setItem('neutral', JSON.stringify(neutral));
+  }, [good, bad, neutral]);
 
   const totalFeedback = countTotalFeedback();
   const positiveFeedbackPercentage = countPositiveFeedbackPercentage();
